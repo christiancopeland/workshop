@@ -1,0 +1,25 @@
+09:08:54 | INFO     | workshop:setup_logger:57 | ============================================================
+09:08:54 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T09:08:54.298804
+09:08:54 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_090854.log
+09:08:54 | INFO     | workshop:setup_logger:60 | ============================================================
+09:08:54 | INFO     | workshop.audio:__init__:67 | Resampling enabled: 44100Hz → 16000Hz
+09:08:54 | INFO     | workshop.audio:__init__:68 |   Hardware frames: 1412 samples → Output: 512 samples
+09:08:54 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=44100Hz, Output=16000Hz, 1ch, 512 samples/frame, device=11
+09:08:54 | INFO     | workshop.audio:start:184 | ✅ Audio stream started (device=11, HW=44100Hz, Output=16000Hz)
+09:08:57 | INFO     | workshop.audio:stop:215 | Audio stream stopped
+09:08:57 | INFO     | workshop.wake_word:__init__:58 | Pre-trained models downloaded/verified
+09:08:57 | INFO     | workshop.wake_word:__init__:73 | Loading OpenWakeWord model: alexa
+09:08:57 | INFO     | workshop.wake_word:__init__:82 | Discovered prediction key: 'alexa'
+09:08:57 | INFO     | workshop.wake_word:__init__:91 | WakeWordDetector ready: key=alexa, threshold=0.03
+09:08:57 | INFO     | workshop.wake_word:__init__:58 | Pre-trained models downloaded/verified
+09:08:57 | INFO     | workshop.wake_word:__init__:73 | Loading OpenWakeWord model: hey_jarvis
+09:08:57 | INFO     | workshop.wake_word:__init__:82 | Discovered prediction key: 'hey_jarvis'
+09:08:57 | INFO     | workshop.wake_word:__init__:91 | WakeWordDetector ready: key=hey_jarvis, threshold=0.5
+09:08:59 | INFO     | workshop.wake_word:__init__:58 | Pre-trained models downloaded/verified
+09:08:59 | INFO     | workshop.wake_word:__init__:73 | Loading OpenWakeWord model: hey_jarvis
+09:08:59 | INFO     | workshop.wake_word:__init__:82 | Discovered prediction key: 'hey_jarvis'
+09:08:59 | INFO     | workshop.wake_word:__init__:91 | WakeWordDetector ready: key=hey_jarvis, threshold=0.5
+09:08:59 | INFO     | workshop.audio:__init__:67 | Resampling enabled: 44100Hz → 16000Hz
+09:08:59 | INFO     | workshop.audio:__init__:68 |   Hardware frames: 1412 samples → Output: 512 samples
+09:08:59 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=44100Hz, Output=16000Hz, 2ch, 512 samples/frame, device=4
+09:08:59 | ERROR    | workshop.audio:start:189 | Failed to start audio stream: Error opening InputStream: Invalid number of channels [PaErrorCode -9998]

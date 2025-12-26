@@ -1,0 +1,149 @@
+15:46:22 | INFO     | workshop:setup_logger:57 | ============================================================
+15:46:22 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T15:46:22.823722
+15:46:22 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_154622.log
+15:46:22 | INFO     | workshop:setup_logger:60 | ============================================================
+15:46:24 | DEBUG    | workshop.memory:_init_sqlite:128 | SQLite initialized
+15:46:24 | INFO     | workshop.memory:_init_chroma:149 | ChromaDB initialized with 2028 documents
+15:46:24 | DEBUG    | workshop.memory:_load_index_cache:162 | Loaded index cache: 0 files
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: read_file
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: write_file
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: list_directory
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: search_files
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: run_shell
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: remember
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: recall
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: take_note
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: list_notes
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: get_current_time
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: calculate
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: web_search
+15:46:24 | INFO     | workshop.tools:register_default_tools:652 | Registered 12 tools
+15:46:24 | INFO     | workshop.context:__init__:118 | Context awareness initialized for Linux
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: get_dev_context
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: list_connected_devices
+15:46:24 | INFO     | workshop.tools:register_default_tools:705 | Registered context awareness tools
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: show_file
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: show_directory
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: create_note
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: show_chart
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: show_terminal
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: show_markdown
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: close_construct
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: close_all_constructs
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: list_constructs
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: move_construct
+15:46:24 | INFO     | workshop.construct_tools:register_construct_tools:268 | Registered 9 construct tools
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: work_on
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: project_note
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: what_project
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: list_projects
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: session_summary
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: last_session
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: arduino_compile
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: arduino_upload
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: arduino_monitor
+15:46:24 | DEBUG    | workshop.tools:register:158 | Registered tool: arduino_boards
+15:46:24 | INFO     | workshop.project_tools:register_project_tools:470 | Registered project tools (with Arduino CLI)
+15:46:24 | INFO     | workshop.agent:__init__:174 | Agent initialized with model: qwen3:8b
+15:46:24 | INFO     | workshop.agent:__init__:175 | Ollama URL: http://localhost:11434
+15:46:24 | DEBUG    | workshop.agent:__init__:176 | Available tools: ['read_file', 'write_file', 'list_directory', 'search_files', 'run_shell', 'remember', 'recall', 'take_note', 'list_notes', 'get_current_time', 'calculate', 'web_search', 'get_dev_context', 'list_connected_devices', 'show_file', 'show_directory', 'create_note', 'show_chart', 'show_terminal', 'show_markdown', 'close_construct', 'close_all_constructs', 'list_constructs', 'move_construct', 'work_on', 'project_note', 'what_project', 'list_projects', 'session_summary', 'last_session', 'arduino_compile', 'arduino_upload', 'arduino_monitor', 'arduino_boards']
+15:46:24 | INFO     | workshop.agent:__init__:178 | Construct manager attached
+15:46:24 | INFO     | workshop.agent:__init__:180 | Context awareness enabled
+15:46:24 | INFO     | workshop.whisper_cpp:__init__:67 | WhisperCpp initialized: model=ggml-base.en.bin, threads=4
+15:46:24 | INFO     | workshop.ollama_stream:__init__:56 | OllamaStreamingClient: qwen3:8b @ http://localhost:11434
+15:46:24 | INFO     | workshop.piper_stream:__init__:61 | PiperStreamingTTS: en_US-lessac-medium.onnx
+15:46:24 | INFO     | workshop.vad:__init__:62 | Loading silero-vad model...
+15:46:24 | INFO     | workshop.vad:__init__:71 | ✅ silero-vad loaded
+15:46:24 | INFO     | workshop.vad:__init__:89 | VAD ready: threshold=0.5, min_speech=250ms, min_silence=300ms
+15:46:24 | INFO     | workshop.vad:__init__:296 | SpeechEndDetector initialized (timeout=30.0s)
+15:46:24 | INFO     | workshop.vad:__init__:445 | InterruptionDetector initialized (threshold=0.60, confirmation=3)
+15:46:24 | INFO     | workshop.audio_pipeline:__init__:61 | Initializing AudioFramePipeline (rate=16000, frame=512, timeout=30.0s)
+15:46:24 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=44100Hz, Output=44100Hz, 2ch, 1470 samples/frame, device=None
+15:46:24 | INFO     | workshop.vad:__init__:62 | Loading silero-vad model...
+15:46:24 | INFO     | workshop.vad:__init__:71 | ✅ silero-vad loaded
+15:46:24 | INFO     | workshop.vad:__init__:89 | VAD ready: threshold=0.5, min_speech=250ms, min_silence=300ms
+15:46:24 | INFO     | workshop.vad:__init__:296 | SpeechEndDetector initialized (timeout=30.0s)
+15:46:24 | INFO     | workshop.vad:__init__:445 | InterruptionDetector initialized (threshold=0.60, confirmation=3)
+15:46:24 | INFO     | workshop.audio_pipeline:__init__:92 | AudioFramePipeline initialized successfully
+15:46:24 | DEBUG    | workshop.vad:on_interruption:527 | Interruption callback registered
+15:46:24 | INFO     | workshop.wake_pipeline:__init__:39 | Initializing WakeWordPipeline (wake_word='alexa', timeout=30.0s)
+15:46:24 | INFO     | workshop.wake_word:__init__:104 | Pre-trained models downloaded/verified
+15:46:24 | INFO     | workshop.wake_word:__init__:124 | Loading OpenWakeWord model: alexa
+15:46:24 | INFO     | workshop.wake_word:__init__:133 | Discovered prediction key: 'alexa'
+15:46:24 | INFO     | workshop.wake_word:__init__:154 | WakeWordDetector ready: model=alexa, key=alexa, threshold=0.5, cooldown=2.0s, warmup=1.5s
+15:46:24 | INFO     | workshop.audio_pipeline:__init__:61 | Initializing AudioFramePipeline (rate=44100, frame=512, timeout=30.0s)
+15:46:24 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=44100Hz, Output=44100Hz, 2ch, 1470 samples/frame, device=None
+15:46:24 | INFO     | workshop.vad:__init__:62 | Loading silero-vad model...
+15:46:24 | INFO     | workshop.vad:__init__:71 | ✅ silero-vad loaded
+15:46:24 | INFO     | workshop.vad:__init__:89 | VAD ready: threshold=0.5, min_speech=250ms, min_silence=300ms
+15:46:24 | INFO     | workshop.vad:__init__:296 | SpeechEndDetector initialized (timeout=30.0s)
+15:46:24 | INFO     | workshop.vad:__init__:445 | InterruptionDetector initialized (threshold=0.60, confirmation=3)
+15:46:24 | INFO     | workshop.audio_pipeline:__init__:92 | AudioFramePipeline initialized successfully
+15:46:24 | INFO     | workshop.wake_pipeline:__init__:66 | ✅ WakeWordPipeline initialized successfully
+15:46:24 | INFO     | workshop.constructs:start_server:81 | Construct server started on ws://localhost:8765
+15:46:24 | INFO     | workshop.wake_pipeline:register_callbacks:74 | Callbacks registered: on_wake=True, on_speech=True
+15:46:24 | INFO     | workshop.wake_pipeline:run:162 | 🚀 Starting wake word pipeline...
+15:46:24 | INFO     | workshop.audio:start:184 | ✅ Audio stream started (device=None, HW=44100Hz, Output=44100Hz)
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:25 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:26 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:26 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:26 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:26 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:46:26 | INFO     | workshop.wake_word:_process_chunk:229 | Warmup complete, detection enabled
+15:46:26 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 3.42534e-05}
+15:46:26 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.4856078}
+15:46:26 | INFO     | workshop.wake_word:_process_chunk:252 | 🎤 Wake word detected! (score=0.999)
+15:46:26 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.9987158}
+15:46:26 | INFO     | workshop.wake_pipeline:_process_idle_state:111 | 🎤 WAKE WORD DETECTED! 'alexa' (#1, score=0.999)
+15:46:26 | INFO     | workshop.wake_pipeline:set_state:82 | State transition: idle → listening (was idle for 1.58s)
+15:46:26 | INFO     | workshop.audio_pipeline:start_listening:104 | 🎤 Starting audio capture...
+15:46:26 | WARNING  | workshop.audio:start:166 | Stream already running
+15:46:26 | DEBUG    | workshop.vad:reset:152 | VAD state reset
+15:46:26 | DEBUG    | workshop.vad:reset:152 | VAD state reset
+15:46:26 | DEBUG    | workshop.vad:reset:358 | SpeechEndDetector reset
+15:46:26 | DEBUG    | workshop.vad:reset:533 | InterruptionDetector reset
+15:46:26 | INFO     | workshop.audio_pipeline:start_listening:115 | ✅ Listening active
+15:46:26 | INFO     | workshop.audio_pipeline:capture_speech_segment:226 | Waiting for speech (max 30s)...
+15:46:26 | ERROR    | workshop.wake_pipeline:_process_listening_state:154 | Error capturing speech: The following operation failed in the TorchScript interpreter.
+Traceback of TorchScript, serialized code (most recent call last):
+  File "code/__torch__/vad/model/vad_annotator.py", line 27, in forward
+    if _2:
+      _3 = torch.format(_0, (torch.size(x0))[-1])
+      ops.prim.RaiseException(_3, "builtins.ValueError")
+      ~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    else:
+      pass
+
+Traceback of TorchScript, original code (most recent call last):
+  File "/home/keras/notebook/nvme1/adamnsandle/silero-models-research/vad/model/vad_annotator.py", line 683, in forward
+        num_samples = 512 if sr == 16000 else 256
+        if x.shape[-1] != num_samples:
+            raise ValueError(f"Provided number of samples is {x.shape[-1]} (Supported values: 256 for 8000 sample rate, 512 for 16000)")
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+    
+        batch_size = x.shape[0]
+builtins.ValueError: Provided number of samples is 1470 (Supported values: 256 for 8000 sample rate, 512 for 16000)
+
+15:46:26 | INFO     | workshop.wake_pipeline:set_state:82 | State transition: listening → idle (was listening for 0.07s)
+15:46:26 | ERROR    | workshop.wake_pipeline:run:193 | Pipeline error: 'AudioFramePipeline' object has no attribute 'is_listening'
+15:46:26 | INFO     | workshop.wake_pipeline:stop:201 | 🛑 Stopping pipeline...
+15:46:26 | WARNING  | workshop.wake_pipeline:stop:211 | Error during stop: 'AudioFramePipeline' object has no attribute 'is_listening'
+15:46:26 | INFO     | workshop.wake_pipeline:stop:212 | ✅ Pipeline stopped
+15:46:26 | INFO     | workshop.wake_pipeline:stop:201 | 🛑 Stopping pipeline...
+15:46:26 | WARNING  | workshop.wake_pipeline:stop:211 | Error during stop: 'AudioFramePipeline' object has no attribute 'is_listening'
+15:46:26 | INFO     | workshop.wake_pipeline:stop:212 | ✅ Pipeline stopped
+15:46:26 | INFO     | workshop.constructs:stop_server:94 | Construct server stopped
+15:46:26 | INFO     | workshop.constructs:stop_server:94 | Construct server stopped
+15:46:26 | INFO     | workshop.wake_pipeline:stop:201 | 🛑 Stopping pipeline...
+15:46:26 | WARNING  | workshop.wake_pipeline:stop:211 | Error during stop: 'AudioFramePipeline' object has no attribute 'is_listening'
+15:46:26 | INFO     | workshop.wake_pipeline:stop:212 | ✅ Pipeline stopped

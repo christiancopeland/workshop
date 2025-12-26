@@ -1,0 +1,18 @@
+14:44:17 | INFO     | workshop:setup_logger:57 | ============================================================
+14:44:17 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T14:44:17.761558
+14:44:17 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_144417.log
+14:44:17 | INFO     | workshop:setup_logger:60 | ============================================================
+14:44:18 | INFO     | workshop.wake_word:__init__:63 | Pre-trained models downloaded/verified
+14:44:18 | INFO     | workshop.wake_word:__init__:80 | Loading OpenWakeWord model: alexa
+14:44:18 | INFO     | workshop.wake_word:__init__:89 | Discovered prediction key: 'alexa'
+14:44:18 | INFO     | workshop.wake_word:__init__:108 | WakeWordDetector ready: threshold=0.5, cooldown=2.0s, warmup=1.5s
+14:44:18 | INFO     | workshop.audio:__init__:67 | Resampling enabled: 44100Hz → 16000Hz
+14:44:18 | INFO     | workshop.audio:__init__:68 |   Hardware frames: 1412 samples → Output: 512 samples
+14:44:18 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=44100Hz, Output=16000Hz, 1ch, 512 samples/frame, device=None
+14:44:18 | INFO     | workshop.audio:start:184 | ✅ Audio stream started (device=None, HW=44100Hz, Output=16000Hz)
+14:44:19 | INFO     | workshop.wake_word:detect:150 | Warmup complete, detection enabled
+14:44:40 | INFO     | workshop.wake_word:detect:170 | 🎤 Wake word detected! (score=0.908)
+14:44:42 | DEBUG    | workshop.wake_word:detect:160 | Cooldown expired, model reset
+14:44:52 | INFO     | workshop.wake_word:detect:170 | 🎤 Wake word detected! (score=0.998)
+14:44:54 | DEBUG    | workshop.wake_word:detect:160 | Cooldown expired, model reset
+14:44:54 | INFO     | workshop.audio:stop:215 | Audio stream stopped

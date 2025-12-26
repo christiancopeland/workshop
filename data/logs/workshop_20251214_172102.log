@@ -1,0 +1,32 @@
+17:21:02 | INFO     | workshop:setup_logger:57 | ============================================================
+17:21:02 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T17:21:02.912816
+17:21:02 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_172102.log
+17:21:02 | INFO     | workshop:setup_logger:60 | ============================================================
+17:21:02 | DEBUG    | workshop.memory:_init_sqlite:161 | SQLite initialized
+17:21:03 | INFO     | workshop.memory:_init_chroma:182 | ChromaDB initialized with 2028 documents
+17:21:03 | DEBUG    | workshop.memory:_load_index_cache:195 | Loaded index cache: 0 files
+17:21:03 | INFO     | workshop.context_manager:__init__:186 | ContextGraph initialized
+17:21:03 | INFO     | workshop.context_manager:__init__:69 | FileWatcher initialized
+17:21:03 | INFO     | workshop.context_manager:__init__:479 | WorkflowDetector initialized
+17:21:03 | INFO     | workshop.context_manager:scan_project:395 | Scanning project: /home/bron/FlyingTiger/Workshop_Assistant_Dev
+17:21:03 | INFO     | workshop.context_manager:scan_project:422 | Scanned 107 files in Workshop_Assistant_Dev
+17:21:03 | INFO     | workshop.context_manager:watch_directory:84 | Now watching: /home/bron/FlyingTiger/Workshop_Assistant_Dev
+17:21:03 | INFO     | workshop.context_manager:scan_project:395 | Scanning project: /home/bron/FlyingTiger/Products/Smart_LiPo_Battery_Guardian
+17:21:04 | INFO     | workshop.context_manager:scan_project:422 | Scanned 58 files in Smart_LiPo_Battery_Guardian
+17:21:04 | INFO     | workshop.context_manager:watch_directory:84 | Now watching: /home/bron/FlyingTiger/Products/Smart_LiPo_Battery_Guardian
+17:21:04 | INFO     | workshop.context_manager:scan_project:395 | Scanning project: /home/bron/Arduino/sketches
+17:21:04 | INFO     | workshop.context_manager:scan_project:422 | Scanned 732 files in sketches
+17:21:04 | INFO     | workshop.context_manager:watch_directory:84 | Now watching: /home/bron/Arduino/sketches
+17:21:05 | INFO     | workshop.context_manager:start:94 | FileWatcher started
+17:21:05 | INFO     | workshop.context_manager:__init__:635 | ContextManager initialized with 3 projects
+17:21:05 | DEBUG    | workshop.context_manager:detect_workflow:550 | Workflow detected: unknown (confidence: 0.00)
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: get_file_content
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: search_project_files
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: find_definition
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: find_references
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: get_related_files
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: get_recent_edits
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: search_web_docs
+17:21:05 | DEBUG    | workshop.tools:register:158 | Registered tool: get_context_stats
+17:21:05 | INFO     | workshop.context_tools:register_context_tools:474 | Registered 8 Phase 3 context tools
+17:21:05 | INFO     | workshop.context_manager:stop:102 | FileWatcher stopped

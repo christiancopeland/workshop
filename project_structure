@@ -1,0 +1,71 @@
+.
+├── agent.py
+├── audio_pipeline.py
+├── audio_playback.py
+├── audio_realtime.py
+├── calibration_calculator_BatteryGuardian.py
+├── config.py
+├── construct_manager.py
+├── constructs.py
+├── construct_tools.py
+├── context.py
+├── demo_context.py
+├── en_US-lessac-medium.onnx
+├── en_US-lessac-medium.onnx.json
+├── gesture.py
+├── logger.py
+├── main.py
+├── memory.py
+├── ollama_stream.py
+├── phase2_integration_test_1_vad.py
+├── phase2_integration_test_2_segment.py
+├── phase2_integration_test_3_timeout.py
+├── phase2_integration_test_4_wake.py
+├── phase2_integration_test_5_interrupt.py
+├── phase2_integration_test_6_full.py
+├── piper_stream.py
+├── project_structure
+├── project_tools.py
+├── README.md
+├── requirements.txt
+├── Roadmap.md
+├── ROADMAP.md
+├── run_phase2_integration_tests.py
+├── specs
+│   ├── Master_Project_Spec_Phase2_Real-Time_Voice.md
+│   ├── Phase2_Complete.md
+│   ├── Phase_2_Implementation_Plan.md
+│   ├── Phase_2_Integration_Testing_Guide.md
+│   ├── spec_audio_001.md
+│   ├── spec_audio_002.md
+│   ├── spec_audio_003.md
+│   ├── spec_vad_002.md
+│   ├── spec_vad_003.md
+│   └── spec_wake_001.md
+├── system_check.py
+├── system_fix.py
+├── tests
+│   ├── __init__.py
+│   ├── test_agent_context.py
+│   ├── test_audio_002.py
+│   ├── test_audio_playback.py
+│   ├── test_audio.py
+│   ├── test_audio_realtime.py
+│   ├── test_context.py
+│   ├── test_installation.py
+│   ├── test_ollama.py
+│   ├── test_voice.py
+│   ├── test_wake_001.py
+│   ├── test_wake_word.py
+│   └── test_whisper_wrapper.py
+├── test_vad.py
+├── tools.py
+├── vad.py
+├── voice.py
+├── voice_stack.py
+├── voice_state.py
+├── wake_pipeline.py
+├── wake_word.py
+└── whisper_wrapper.py
+
+2 directories, 66 files

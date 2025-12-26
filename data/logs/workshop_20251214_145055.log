@@ -1,0 +1,26 @@
+14:50:55 | INFO     | workshop:setup_logger:57 | ============================================================
+14:50:55 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T14:50:55.430739
+14:50:55 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_145055.log
+14:50:55 | INFO     | workshop:setup_logger:60 | ============================================================
+14:50:59 | INFO     | workshop.vad:__init__:62 | Loading silero-vad model...
+14:50:59 | INFO     | workshop.vad:__init__:71 | ✅ silero-vad loaded
+14:50:59 | INFO     | workshop.vad:__init__:89 | VAD ready: threshold=0.5, min_speech=250ms, min_silence=300ms
+14:50:59 | INFO     | workshop.vad:__init__:445 | InterruptionDetector initialized (threshold=0.60, confirmation=3)
+14:50:59 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=16000Hz, Output=16000Hz, 1ch, 512 samples/frame, device=None
+14:50:59 | INFO     | workshop.audio:start:184 | ✅ Audio stream started (device=None, HW=16000Hz, Output=16000Hz)
+14:50:59 | DEBUG    | workshop.vad:on_interruption:527 | Interruption callback registered
+14:50:59 | DEBUG    | workshop.vad:set_assistant_speaking:458 | Assistant started speaking - monitoring for interruptions
+14:51:03 | INFO     | workshop.vad:process_frame:498 | 🛑 INTERRUPTION DETECTED! (prob=0.999, frames=3)
+14:51:03 | DEBUG    | workshop.vad:set_assistant_speaking:461 | Assistant stopped speaking - interruption monitoring off
+14:51:03 | DEBUG    | workshop.vad:reset:533 | InterruptionDetector reset
+14:51:05 | DEBUG    | workshop.vad:on_interruption:527 | Interruption callback registered
+14:51:05 | DEBUG    | workshop.vad:set_assistant_speaking:458 | Assistant started speaking - monitoring for interruptions
+14:51:05 | INFO     | workshop.vad:process_frame:498 | 🛑 INTERRUPTION DETECTED! (prob=0.992, frames=3)
+14:51:05 | DEBUG    | workshop.vad:set_assistant_speaking:461 | Assistant stopped speaking - interruption monitoring off
+14:51:05 | DEBUG    | workshop.vad:reset:533 | InterruptionDetector reset
+14:51:07 | DEBUG    | workshop.vad:on_interruption:527 | Interruption callback registered
+14:51:07 | DEBUG    | workshop.vad:set_assistant_speaking:458 | Assistant started speaking - monitoring for interruptions
+14:51:07 | INFO     | workshop.vad:process_frame:498 | 🛑 INTERRUPTION DETECTED! (prob=0.998, frames=3)
+14:51:07 | DEBUG    | workshop.vad:set_assistant_speaking:461 | Assistant stopped speaking - interruption monitoring off
+14:51:07 | DEBUG    | workshop.vad:reset:533 | InterruptionDetector reset
+14:51:07 | INFO     | workshop.audio:stop:215 | Audio stream stopped

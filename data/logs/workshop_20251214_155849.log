@@ -1,0 +1,94 @@
+15:58:49 | INFO     | workshop:setup_logger:57 | ============================================================
+15:58:49 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T15:58:49.007557
+15:58:49 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_155849.log
+15:58:49 | INFO     | workshop:setup_logger:60 | ============================================================
+15:58:53 | INFO     | workshop.wake_pipeline:__init__:39 | Initializing WakeWordPipeline (wake_word='alexa', timeout=15.0s)
+15:58:53 | INFO     | workshop.wake_word:__init__:104 | Pre-trained models downloaded/verified
+15:58:53 | INFO     | workshop.wake_word:__init__:124 | Loading OpenWakeWord model: alexa
+15:58:53 | INFO     | workshop.wake_word:__init__:133 | Discovered prediction key: 'alexa'
+15:58:53 | INFO     | workshop.wake_word:__init__:154 | WakeWordDetector ready: model=alexa, key=alexa, threshold=0.5, cooldown=2.0s, warmup=1.5s
+15:58:53 | INFO     | workshop.audio_pipeline:__init__:61 | Initializing AudioFramePipeline (rate=44100, frame=512, timeout=15.0s)
+15:58:53 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=44100Hz, Output=44100Hz, 2ch, 1470 samples/frame, device=None
+15:58:53 | INFO     | workshop.vad:__init__:62 | Loading silero-vad model...
+15:58:53 | INFO     | workshop.vad:__init__:71 | ✅ silero-vad loaded
+15:58:53 | INFO     | workshop.vad:__init__:89 | VAD ready: threshold=0.5, min_speech=250ms, min_silence=300ms
+15:58:53 | INFO     | workshop.vad:__init__:296 | SpeechEndDetector initialized (timeout=15.0s)
+15:58:53 | INFO     | workshop.vad:__init__:445 | InterruptionDetector initialized (threshold=0.60, confirmation=3)
+15:58:53 | INFO     | workshop.audio_pipeline:__init__:92 | AudioFramePipeline initialized successfully
+15:58:53 | INFO     | workshop.wake_pipeline:__init__:66 | ✅ WakeWordPipeline initialized successfully
+15:58:53 | INFO     | workshop.wake_pipeline:register_callbacks:74 | Callbacks registered: on_wake=True, on_speech=True
+15:58:53 | INFO     | workshop.wake_pipeline:run:210 | 🚀 Starting wake word pipeline...
+15:58:53 | INFO     | workshop.audio:start:184 | ✅ Audio stream started (device=None, HW=44100Hz, Output=44100Hz)
+15:58:53 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:53 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:53 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:53 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0}
+15:58:54 | INFO     | workshop.wake_word:_process_chunk:229 | Warmup complete, detection enabled
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.00018886499}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.00016551794}
+15:58:54 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.000291601}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.00032093865}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 9.030716e-05}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.5293215e-05}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 2.4380265e-06}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 2.847716e-06}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 5.137407e-06}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.1844224e-05}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 3.7144903e-06}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 2.3776736e-06}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.5840834e-06}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.9858671e-06}
+15:58:55 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.2143091e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.0421891e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.721114e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 2.1289181e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.4607742e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 9.410242e-07}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.2958591e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.3506451e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.0142286e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 3.7460126e-07}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 2.135615e-07}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 3.93743e-07}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 1.3311925e-06}
+15:58:56 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.0002620634}
+15:58:57 | INFO     | workshop.wake_word:_process_chunk:252 | 🎤 Wake word detected! (score=0.693)
+15:58:57 | DEBUG    | workshop.wake_pipeline:_process_idle_state:106 | 🔍 Wake scores: {'alexa': 0.6932516}
+15:58:57 | INFO     | workshop.wake_pipeline:_process_idle_state:111 | 🎤 WAKE WORD DETECTED! 'alexa' (#1, score=0.693)
+15:58:57 | INFO     | workshop.wake_pipeline:set_state:82 | State transition: idle → listening (was idle for 3.58s)
+15:58:57 | INFO     | workshop.wake_pipeline:_process_idle_state:143 | Queue size before refill: 1 frames
+15:58:57 | INFO     | workshop.wake_pipeline:_process_idle_state:152 | Queue refilled: 11 frames in 300ms
+15:58:57 | INFO     | workshop.audio_pipeline:start_listening:108 | 🎤 Starting audio capture...
+15:58:57 | DEBUG    | workshop.vad:reset:152 | VAD state reset
+15:58:57 | DEBUG    | workshop.vad:reset:152 | VAD state reset
+15:58:57 | DEBUG    | workshop.vad:reset:358 | SpeechEndDetector reset
+15:58:57 | DEBUG    | workshop.vad:reset:533 | InterruptionDetector reset
+15:58:57 | INFO     | workshop.audio_pipeline:start_listening:120 | ✅ Listening active
+15:58:57 | INFO     | workshop.audio_pipeline:capture_speech_segment:234 | Waiting for speech (max 30s)...
+15:58:59 | INFO     | workshop.vad:process_frame:126 | 🗣️  Speech started (prob=1.00)
+15:58:59 | DEBUG    | workshop.vad:process_frame:315 | Speech started, timer activated
+15:59:00 | INFO     | workshop.audio_pipeline:capture_speech_segment:269 | Processed 100 frames (2.9s elapsed)...
+15:59:01 | INFO     | workshop.vad:process_frame:134 | 🔇 Speech ended (prob=0.02)
+15:59:01 | INFO     | workshop.vad:finalize_segment:241 | 📦 Speech segment collected: 24576 samples (1.54s)
+15:59:01 | INFO     | workshop.vad:process_frame:347 | ✅ Speech ended naturally: 1.54s, 24576 samples
+15:59:01 | INFO     | workshop.audio_pipeline:process_frame:202 | 📦 Speech segment #1: 0.56s (natural_pause)
+15:59:01 | INFO     | workshop.audio_pipeline:capture_speech_segment:264 | ✅ Speech captured after 4.1s (134 frames)
+15:59:01 | INFO     | workshop.wake_pipeline:_process_listening_state:169 | 📝 SPEECH CAPTURED! (#1, 0.56s, natural_pause)
+15:59:01 | INFO     | workshop.wake_pipeline:set_state:82 | State transition: listening → idle (was listening for 4.39s)
+15:59:01 | INFO     | workshop.wake_pipeline:stop:249 | 🛑 Stopping pipeline...
+15:59:01 | INFO     | workshop.audio_pipeline:stop_listening:131 | Stopping audio capture...
+15:59:01 | INFO     | workshop.audio:stop:215 | Audio stream stopped
+15:59:01 | INFO     | workshop.audio_pipeline:stop_listening:137 | Listening stopped
+15:59:01 | INFO     | workshop.wake_pipeline:stop:260 | ✅ Pipeline stopped
+15:59:01 | INFO     | workshop.wake_pipeline:set_state:82 | State transition: idle → processing (was idle for 0.05s)
+15:59:01 | INFO     | workshop.wake_pipeline:stop:249 | 🛑 Stopping pipeline...
+15:59:01 | INFO     | workshop.wake_pipeline:stop:260 | ✅ Pipeline stopped

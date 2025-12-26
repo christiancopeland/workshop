@@ -1,0 +1,10 @@
+14:52:51 | INFO     | workshop:setup_logger:57 | ============================================================
+14:52:51 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T14:52:51.469048
+14:52:51 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_145251.log
+14:52:51 | INFO     | workshop:setup_logger:60 | ============================================================
+14:52:55 | INFO     | workshop.wake_pipeline:__init__:39 | Initializing WakeWordPipeline (wake_word='alexa', timeout=15.0s)
+14:52:55 | INFO     | workshop.wake_word:__init__:63 | Pre-trained models downloaded/verified
+14:52:55 | INFO     | workshop.wake_word:__init__:80 | Loading OpenWakeWord model: alexa
+14:52:55 | INFO     | workshop.wake_word:__init__:89 | Discovered prediction key: 'alexa'
+14:52:55 | INFO     | workshop.wake_word:__init__:108 | WakeWordDetector ready: threshold=0.5, cooldown=2.0s, warmup=1.0s
+14:52:55 | INFO     | workshop.audio_pipeline:__init__:61 | Initializing AudioFramePipeline (rate=44100, frame=512, timeout=15.0s)

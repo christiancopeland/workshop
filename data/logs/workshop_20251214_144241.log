@@ -1,0 +1,9 @@
+14:42:41 | INFO     | workshop:setup_logger:57 | ============================================================
+14:42:41 | INFO     | workshop:setup_logger:58 | Workshop session started at 2025-12-14T14:42:41.899419
+14:42:41 | INFO     | workshop:setup_logger:59 | Log file: /home/bron/FlyingTiger/Workshop_Assistant_Dev/data/logs/workshop_20251214_144241.log
+14:42:41 | INFO     | workshop:setup_logger:60 | ============================================================
+14:42:42 | INFO     | workshop.audio:__init__:67 | Resampling enabled: 44100Hz → 16000Hz
+14:42:42 | INFO     | workshop.audio:__init__:68 |   Hardware frames: 1412 samples → Output: 512 samples
+14:42:42 | INFO     | workshop.audio:__init__:81 | AudioStream initialized: HW=44100Hz, Output=16000Hz, 1ch, 512 samples/frame, device=None
+14:42:42 | INFO     | workshop.audio:start:184 | ✅ Audio stream started (device=None, HW=44100Hz, Output=16000Hz)
+14:42:45 | INFO     | workshop.audio:stop:215 | Audio stream stopped

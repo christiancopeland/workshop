@@ -1,0 +1,40 @@
+# Workshop - Local Agentic Voice Assistant
+# Core dependencies
+
+# HTTP client for Ollama
+aiohttp>=3.9.0
+
+# Vector database for long-term memory
+chromadb>=0.4.0
+
+# Voice Stack (recommended for full experience)
+faster-whisper>=0.10.0  # STT - uses GPU when available
+sounddevice>=0.4.6      # Audio I/O
+soundfile>=0.12.0       # Audio file handling
+numpy>=1.24.0           # Audio processing
+
+# Optional: Wake word detection (for always-on background mode)
+# openwakeword>=0.6.0   # Uncomment for "Hey Workshop" wake word
+
+# Constructs - visual UI system
+websockets>=12.0        # WebSocket server for construct UI
+
+# Optional: Piper TTS for voice responses
+# Option 1 - pip package (easier):
+piper-tts>=1.0.0        # pip install piper-tts
+# Option 2 - binary (if pip package doesn't work):
+#   wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_amd64.tar.gz
+#   tar -xzf piper_amd64.tar.gz && sudo mv piper /usr/local/bin/
+# Download voice model (e.g., en_US-lessac-medium):
+#   https://huggingface.co/rhasspy/piper-voices/tree/main/en/en_US/lessac/medium
+
+# Optional: Web search
+ddgs>=6.0.0             # DuckDuckGo search (new package name)
+# duckduckgo-search>=4.0.0  # Old name, deprecated
+
+# Optional: Better embeddings for ChromaDB
+# sentence-transformers>=2.2.0  # Uncomment for better retrieval
+
+# Development
+# pytest>=7.0.0
+# pytest-asyncio>=0.21.0

@@ -1,0 +1,137 @@
+"""
+Integration Test 2: Speech Segment Capture
+Tests capturing complete speech segments with natural pauses.
+"""
+
+import numpy as np
+import time
+from audio_realtime import RealtimeAudioCapture
+from vad import VoiceActivityDetector, SpeechEndDetector
+import logger as log
+
+
+def test_segment_capture():
+    """Test speech segment capture with real microphone."""
+    print("\n" + "="*60)
+    print("INTEGRATION TEST 2: Speech Segment Capture")
+    print("="*60)
+    print("\nThis test verifies complete speech segments are captured.")
+    print("\nInstructions:")
+    print("1. Wait for 'Speak now...'")
+    print("2. SPEAK a sentence (e.g., 'Hello Workshop, how are you today?')")
+    print("3. PAUSE for 1 second")
+    print("4. Observe segment capture")
+    print("5. Test will capture 3 segments then stop")
+    print("\nStarting in 3 seconds...\n")
+    time.sleep(3)
+    
+    # Initialize components
+    vad = VoiceActivityDetector(
+        threshold=0.5,
+        min_speech_duration_ms=250,
+        min_silence_duration_ms=300
+    )
+    
+    detector = SpeechEndDetector(vad, timeout_s=30.0)
+    capture = RealtimeAudioCapture(sample_rate=16000, frame_size=512)
+    
+    try:
+        capture.start()
+        segments_captured = 0
+        target_segments = 3
+        
+        while segments_captured < target_segments:
+            print(f"\n🎤 Segment {segments_captured + 1}/{target_segments}")
+            print("   Speak now, then pause...")
+            print()
+            
+            segment_start = time.time()
+            frames_processed = 0
+            
+            # Process frames until segment captured
+            while True:
+                frame = capture.get_frame()
+                if frame is None:
+                    time.sleep(0.01)
+                    continue
+                
+                frames_processed += 1
+                
+                # Process through detector
+                segment, reason = detector.process_frame(frame)
+                
+                # Show progress every 50 frames (~1.6 seconds)
+                if frames_processed % 50 == 0:
+                    elapsed = time.time() - segment_start
+                    if vad.is_speaking:
+                        print(f"   🎤 Speaking... ({elapsed:.1f}s)")
+                    else:
+                        print(f"   ... waiting for speech ({elapsed:.1f}s)")
+                
+                if segment is not None:
+                    # Segment captured!
+                    segments_captured += 1
+                    elapsed = time.time() - segment_start
+                    duration = len(segment) / 16000.0
+                    
+                    print(f"\n   ✅ SEGMENT CAPTURED!")
+                    print(f"   Duration: {duration:.2f}s")
+                    print(f"   Samples: {len(segment)}")
+                    print(f"   End reason: {reason}")
+                    print(f"   Total time: {elapsed:.1f}s")
+                    
+                    # Show first/last few samples (as validation)
+                    print(f"   Sample range: [{segment.min():.3f}, {segment.max():.3f}]")
+                    
+                    # Reset detector for next segment
+                    detector.reset()
+                    
+                    break
+        
+        # All segments captured
+        print("\n" + "="*60)
+        print("ALL SEGMENTS CAPTURED!")
+        print("="*60)
+        
+        stats = detector.get_stats()
+        print(f"\nStatistics:")
+        print(f"  Total segments: {stats['total_segments']}")
+        print(f"  Natural pause endings: {stats['natural_pause']}")
+        print(f"  Timeout endings: {stats['timeout']}")
+        print(f"  Natural pause %: {stats['natural_pause_pct']:.1f}%")
+        print(f"  Timeout %: {stats['timeout_pct']:.1f}%")
+        
+        # Assessment
+        print("\n" + "="*60)
+        print("ASSESSMENT")
+        print("="*60)
+        
+        if segments_captured == target_segments:
+            print(f"✅ PASS: Captured all {target_segments} segments")
+        else:
+            print(f"❌ FAIL: Only captured {segments_captured}/{target_segments}")
+        
+        if stats['segments_by_reason']['natural_pause'] > 0:
+            print("✅ PASS: Natural pause detection working")
+        else:
+            print("⚠️  WARNING: No natural pauses - all timeouts?")
+        
+        print("\n💡 TIP: Try varying your speech:")
+        print("   - Short: 'Hello'")
+        print("   - Medium: 'Hello Workshop, how are you?'")
+        print("   - Long: Speak continuously for 10+ seconds")
+        
+        print("\n" + "="*60)
+        print("Test complete!")
+        print("="*60 + "\n")
+    
+    except KeyboardInterrupt:
+        print("\n\n⏹️  Test stopped by user")
+        print(f"Captured {segments_captured}/{target_segments} segments")
+    
+    finally:
+        capture.stop()
+
+
+if __name__ == "__main__":
+    test_segment_capture()
