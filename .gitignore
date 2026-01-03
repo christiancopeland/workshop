@@ -1,4 +1,6 @@
+# ===========================================
 # Python
+# ===========================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -13,26 +15,33 @@ dist/
 venv/
 env/
 ENV/
+.venv/
 
 # ===========================================
 # Runtime Data & Databases
 # ===========================================
 *.db
+*.sqlite
+*.sqlite3
 data/chromadb/
 data/skill_embeddings.json
 
 # ===========================================
-# Conversation & Session Data
+# Conversation, Session & Trace Data
 # ===========================================
 data/traces/
 data/logs/
+data/sessions/
+sessions/
+*.log
 
 # ===========================================
-# Environment Variables
+# Environment Variables & Secrets
 # ===========================================
 .env
-.env.local
-.env*.local
+.env.*
+!.env.example
+*.local
 
 # ===========================================
 # IDE & Editor
@@ -42,13 +51,16 @@ data/logs/
 *.swp
 *.swo
 *~
+.claude/
 
 # ===========================================
-# Testing
+# Testing & Coverage
 # ===========================================
 .pytest_cache/
 .coverage
 htmlcov/
+.tox/
+.nox/
 
 # ===========================================
 # Node.js (dashboard)
@@ -57,20 +69,24 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.npm/
 
 # Dashboard build output
 dashboard/dist/
 dashboard/dist-ssr/
-*.local
+dashboard/.vite/
 
 # ===========================================
-# OS files
+# OS Files
 # ===========================================
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # ===========================================
-# Temporary files
+# Temporary & Cache Files
 # ===========================================
 *.tmp
 *.temp
+*.cache
+.cache/
