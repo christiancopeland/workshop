@@ -7,6 +7,9 @@ aiohttp>=3.9.0
 # Vector database for long-term memory
 chromadb>=0.4.0
 
+# File system monitoring for Phase 3 context intelligence
+watchdog>=3.0.0
+
 # Voice Stack (recommended for full experience)
 faster-whisper>=0.10.0  # STT - uses GPU when available
 sounddevice>=0.4.6      # Audio I/O
@@ -18,6 +21,9 @@ numpy>=1.24.0           # Audio processing
 
 # Constructs - visual UI system
 websockets>=12.0        # WebSocket server for construct UI
+
+# Terminal UI
+rich>=13.0.0            # Beautiful terminal output
 
 # Optional: Piper TTS for voice responses
 # Option 1 - pip package (easier):
@@ -32,8 +38,22 @@ piper-tts>=1.0.0        # pip install piper-tts
 ddgs>=6.0.0             # DuckDuckGo search (new package name)
 # duckduckgo-search>=4.0.0  # Old name, deprecated
 
-# Optional: Better embeddings for ChromaDB
-# sentence-transformers>=2.2.0  # Uncomment for better retrieval
+# Web content extraction for deep research
+trafilatura>=1.6.0      # Clean content extraction from web pages (fallback)
+pypdf>=4.0.0            # PDF text extraction for research
+
+# Crawl4AI - Primary web crawler with JS rendering and anti-bot bypass
+crawl4ai>=0.7.8         # Playwright-based crawler with LLM-ready output
+# Note: Run 'crawl4ai-setup' after install, then 'crawl4ai-doctor' to verify
+
+# Phase 4: Semantic Routing (required for embedding-based intent matching)
+sentence-transformers>=2.2.0   # Embedding model for semantic routing (runs on CPU)
+
+# Optional: JSON repair for malformed LLM outputs
+# json-repair>=0.1.0           # Uncomment if needed for function calling
+
+# Trace Dashboard
+flask>=3.0.0            # Simple web dashboard for trace visualization
 
 # Development
 # pytest>=7.0.0

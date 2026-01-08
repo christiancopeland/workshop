@@ -5,7 +5,6 @@ Customize paths, models, and behavior here
 
 import os
 from pathlib import Path
-# this is a comment for the watchdog
 
 class Config:
     """Central configuration for Workshop"""
@@ -19,13 +18,18 @@ class Config:
     
     # === Ollama Settings ===
     OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-    MODEL = os.getenv("WORKSHOP_MODEL", "qwen3:8b")
-    
-    # For function calling, these models work well:
-    # - llama3.1:8b (good balance)
-    # - qwen2.5:7b (strong at function calling)
-    # - mistral:7b (fast)
-    # - llama3.1:70b-q4 (if you have VRAM, best quality)
+    # MODEL = os.getenv("WORKSHOP_MODEL", "phi4:14b")
+    MODEL = os.getenv("WORKSHOP_MODEL", "phi4:14b")
+
+
+    # Model selection:
+    # - phi4:14b (RECOMMENDED - best reasoning, good tool use, ~8GB VRAM)
+    # - qwen2.5:7b (fast, good tool use, ~4.5GB VRAM)
+    # - llama3.1:8b (good balance of speed/accuracy)
+    # - llama3-groq-tool-use:8b (fast routing only, terrible at reasoning)
+    #
+    # NOTE: Model MUST support Ollama's native tool calling API.
+    # Check for "tools" badge on ollama.com/library
     
     # === Voice Settings ===
     WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base.en")
@@ -48,9 +52,79 @@ class Config:
     CHANNELS = 1
     CHUNK_DURATION = 0.5  # seconds per audio chunk
     SILENCE_THRESHOLD = 0.01  # amplitude threshold for silence detection
-    SILENCE_DURATION = 1.5  # seconds of silence to stop listening
-    MAX_LISTEN_DURATION = 30  # maximum seconds to listen
+    SILENCE_DURATION = 3.0  # seconds of silence to stop listening
+    MAX_LISTEN_DURATION = 90  # maximum seconds to listen
     
+    # === Routing Settings (Phase 5: Fabric-Style Two-Stage Routing) ===
+    #
+    # Two-stage routing inspired by Daniel Miessler's Fabric:
+    # Stage 1: Router prompt (phi3:mini) classifies intent → skill name
+    # Stage 2: Skill executor (phi4:14b) runs with NON-NATIVE tool calling
+    #
+    # Uses <tool_call> format instead of native tools, allowing phi4's superior
+    # reasoning to be used for both argument extraction and response synthesis.
+    # This fixes the "bad query extraction" problem where regex captured garbage,
+    # AND avoids using models with native tool support but poor reasoning.
+    #
+    # To use the OLD routing system, set: Agent(use_legacy_routing=True)
+
+    # Router model for Stage 1 intent classification
+    ROUTER_MODEL = os.getenv("WORKSHOP_ROUTER_MODEL", "phi3:mini")  # ~2GB VRAM
+    ROUTER_MAX_TOKENS = 20  # Router outputs only skill name
+    ROUTER_TEMPERATURE = 0.1  # Low temperature for deterministic classification
+
+    # Skill execution model for Stage 2 (NON-NATIVE tool calling)
+    # Uses phi4 for excellent reasoning - outputs <tool_call> format which we parse
+    # Does NOT need to support Ollama's native tool calling API
+    SKILL_EXECUTION_MODEL = os.getenv("WORKSHOP_SKILL_MODEL", "phi4:14b")
+
+    # Semantic pre-filtering thresholds (optional optimization)
+    # When embedding similarity is very high, we can skip the router prompt
+    SEMANTIC_ROUTING_ENABLED = True  # Enable semantic pre-filtering
+    SEMANTIC_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"  # CPU (~1.2GB RAM)
+    SEMANTIC_EMBEDDINGS_CACHE = DATA_DIR / "skill_embeddings.json"
+    SEMANTIC_BYPASS_THRESHOLD = 0.85  # Skip router prompt, go direct to skill
+    SEMANTIC_CONFIRM_THRESHOLD = 0.45  # Router confirms from top candidates
+
+    # Legacy settings (only used if use_legacy_routing=True)
+    SEMANTIC_HIGH_CONFIDENCE = 0.85  # Legacy: Direct routing threshold
+    SEMANTIC_MEDIUM_CONFIDENCE = 0.45  # Legacy: LLM confirmation threshold
+    ROUTING_PRIORITIES = {
+        "workflow_triggers": 0,   # Legacy: Highest priority
+        "skill_patterns": 1,      # Legacy: Pattern-based
+        "semantic_routing": 2,    # Legacy: Embedding similarity
+        "hardcoded_patterns": 3,  # Legacy: Tool intent patterns
+        "llm_decision": 10,       # Legacy: Fallback
+    }
+
+    # === VRAM Management (12GB constraint) ===
+    VRAM_BUDGET_GB = 12
+    VRAM_HEADROOM_GB = 2  # Reserve for KV cache and operations
+
+    # Model VRAM estimates at Q4_K_M quantization
+    MODEL_VRAM_ESTIMATES = {
+        "phi3:mini": 2.0,           # Router model (semantic confirmation)
+        "phi4:14b": 8.0,            # Primary agent - best reasoning
+        "qwen2.5:7b": 4.5,
+        "qwen2.5-coder:7b": 4.5,
+        "mistral:7b": 4.5,
+        "llama3.1:8b": 5.5,
+        "llama3-groq-tool-use:8b": 5.5,  # Deprecated - bad at reasoning
+    }
+
+    # Model swapping settings
+    OLLAMA_MAX_LOADED_MODELS = 2  # Router + one specialist
+    OLLAMA_KEEP_ALIVE_DEFAULT = "5m"  # Default keep-alive for models
+    OLLAMA_AGGRESSIVE_UNLOAD = True  # Unload immediately after response
+
+    # Specialist agent models
+    SPECIALIST_MODELS = {
+        "primary": "phi4:14b",              # Main agent - reasoning + tool use
+        "researcher": "phi4:14b",           # Research synthesis
+        "coder": "qwen2.5-coder:7b",        # Code generation
+        "writer": "phi4:14b",               # Writing and analysis
+    }
+
     # === Agent Settings ===
     SYSTEM_PROMPT = """You are Workshop, a local AI assistant with DIRECT ACCESS to the user's computer through tools.
 
@@ -112,11 +186,10 @@ Recent context:
     # === Project Paths (for RAG) ===
     # Add paths to your project directories for context
     PROJECT_PATHS = [
-        # Uncomment and modify these for your projects:
-        Path.home() / "FlyingTiger" / "Workshop_Assistant_Dev",
-        Path.home() / "FlyingTiger" / "Products",
-        Path.home() / "Arduino" / "sketches",
-        Path.home() / "FlyingTiger" / "Products" / "Smart_LiPo_Battery_Guardian"
+        # Example paths - customize for your environment:
+        # Path.home() / "Projects" / "my-app",
+        # Path.home() / "Arduino" / "sketches",
+        # Path.home() / "code" / "my-project",
     ]
     
     # File extensions to index for RAG
@@ -131,9 +204,10 @@ Recent context:
     # === Phase 3: Context Intelligence Settings ===
     # Projects to monitor for file changes (Phase 3)
     MONITORED_PROJECTS = [
-        Path.home() / "FlyingTiger" / "Workshop_Assistant_Dev",
-        Path.home() / "FlyingTiger" / "Products" / "Smart_LiPo_Battery_Guardian",
-        Path.home() / "Arduino" / "sketches",
+        # Example paths - customize for your environment:
+        # Path.home() / "Projects" / "my-app",
+        # Path.home() / "Arduino" / "sketches",
+        # Path.home() / "code" / "my-project",
     ]
 
     # File system monitoring
@@ -148,6 +222,45 @@ Recent context:
     CONTEXT_ACTIVE_FILE_WINDOW = 300  # seconds (5 minutes)
     CONTEXT_MAX_ACTIVE_FILES = 5  # max files to include in critical context
     CONTEXT_MAX_RELATED_FILES = 10  # max related files per active file
+
+    # === Crawl4AI Settings (Web Crawling with JS Rendering) ===
+    # Crawl4AI provides JavaScript rendering, anti-bot bypass, and LLM-ready output
+    CRAWL4AI_CONFIG = {
+        "enabled": True,                    # Enable Crawl4AI as primary fetcher
+        "headless": True,                   # Run browser in headless mode
+        "cache_enabled": True,              # Cache crawled pages
+        "timeout_ms": 30000,                # Page timeout in milliseconds
+        "stealth_mode": True,               # Anti-bot detection bypass
+        "browser_type": "chromium",         # chromium | firefox | webkit
+
+        # Content filtering
+        "pruning_threshold": 0.48,          # Noise filtering threshold
+        "min_word_threshold": 0,            # Minimum words per block
+
+        # Rate limiting
+        "max_concurrent": 5,                # Max concurrent requests
+        "delay_between_requests": 0.5,      # Delay in seconds
+
+        # Fallback behavior
+        "fallback_to_trafilatura": True,    # Fall back to Trafilatura on failure
+    }
+
+    # Ollama settings for Crawl4AI LLM extraction (uses local Ollama)
+    CRAWL4AI_LLM_CONFIG = {
+        "provider": "ollama/phi4:14b",      # Match Workshop's main model
+        "api_token": "ollama",              # Ollama doesn't need real token
+        "base_url": OLLAMA_URL,             # Use same Ollama instance
+        "backoff_base_delay": 2,            # Retry delay in seconds
+        "backoff_max_attempts": 3,          # Max retry attempts
+        "backoff_exponential_factor": 2,    # Exponential backoff multiplier
+    }
+
+    # === Trace Logging Settings ===
+    # Enable detailed context tracing for subagent debugging
+    TRACE_LOGGING_ENABLED = os.getenv("WORKSHOP_TRACE_LOGGING", "true").lower() == "true"
+    TRACE_LOG_FULL_CONTEXT = os.getenv("WORKSHOP_TRACE_FULL_CONTEXT", "true").lower() == "true"
+    TRACE_LOG_TOOL_RESULTS = os.getenv("WORKSHOP_TRACE_TOOL_RESULTS", "true").lower() == "true"
+    TRACE_MAX_CONTENT_LENGTH = int(os.getenv("WORKSHOP_TRACE_MAX_LENGTH", "5000"))  # Truncate after this
 
     # === Tool Settings ===
     SHELL_TIMEOUT = 30  # seconds

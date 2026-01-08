@@ -90,3 +90,28 @@ desktop.ini
 *.temp
 *.cache
 .cache/
+
+# ===========================================
+# User-Specific & Local Development
+# ===========================================
+
+# User research outputs and notes
+data/research/
+manual_research_drops/
+
+# Local run scripts with hardcoded paths
+run.sh
+
+# Specs with developer-specific paths (can add back after sanitizing)
+specs/
+
+# Workshop skills/patterns/agents directory (user-specific configuration)
+.workshop/
+
+# Documentation (commit separately after review)
+docs/
+*.md
+!README.md
+
+# Misc notes and external docs
+tools_note.txt
