@@ -1,0 +1,319 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --border-color: #30363d;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-bg-primary text-text-primary font-mono m-0 p-0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-bg-secondary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-muted;
+  }
+}
+
+@layer components {
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    grid-template-rows: 56px 1fr;
+    height: 100vh;
+    gap: 0;
+  }
+
+  .dashboard-header {
+    grid-column: 1 / -1;
+    @apply bg-bg-secondary border-b border-border;
+  }
+
+  .dashboard-sidebar {
+    @apply bg-bg-secondary border-r border-border overflow-y-auto;
+  }
+
+  .dashboard-main {
+    @apply bg-bg-primary overflow-hidden flex flex-col;
+  }
+
+  .dashboard-detail {
+    @apply bg-bg-secondary border-l border-border overflow-y-auto;
+  }
+
+  .panel {
+    @apply bg-bg-secondary border border-border rounded-lg;
+  }
+
+  .panel-header {
+    @apply px-4 py-3 border-b border-border flex items-center justify-between;
+  }
+
+  .panel-title {
+    @apply text-text-primary font-semibold text-sm;
+  }
+
+  .panel-content {
+    @apply p-4;
+  }
+
+  .stat-card {
+    @apply flex flex-col items-center justify-center p-2 rounded bg-bg-tertiary;
+  }
+
+  .stat-value {
+    @apply text-xl font-bold text-text-primary;
+  }
+
+  .stat-label {
+    @apply text-xs text-text-muted uppercase tracking-wide;
+  }
+
+  .event-item {
+    @apply p-3 border-b border-border hover:bg-bg-tertiary/50 cursor-pointer transition-colors;
+  }
+
+  .event-item:last-child {
+    @apply border-b-0;
+  }
+
+  .task-item {
+    @apply flex items-start gap-3 p-3 border-b border-border;
+  }
+
+  .task-item:last-child {
+    @apply border-b-0;
+  }
+
+  .btn {
+    @apply px-4 py-2 rounded font-medium text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-accent-blue text-white hover:bg-accent-blue/80;
+  }
+
+  .btn-danger {
+    @apply bg-accent-red text-white hover:bg-accent-red/80;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-text-secondary hover:bg-bg-tertiary hover:text-text-primary;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 bg-bg-tertiary border border-border rounded text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-blue;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+
+  .badge-blue {
+    @apply bg-accent-blue/20 text-accent-blue;
+  }
+
+  .badge-green {
+    @apply bg-accent-green/20 text-accent-green;
+  }
+
+  .badge-yellow {
+    @apply bg-accent-yellow/20 text-accent-yellow;
+  }
+
+  .badge-red {
+    @apply bg-accent-red/20 text-accent-red;
+  }
+
+  .badge-purple {
+    @apply bg-accent-purple/20 text-accent-purple;
+  }
+
+  .badge-orange {
+    @apply bg-accent-orange/20 text-accent-orange;
+  }
+
+  .tab {
+    @apply px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary border-b-2 border-transparent transition-colors;
+  }
+
+  .tab-active {
+    @apply text-accent-blue border-accent-blue;
+  }
+
+  .collapsible-header {
+    @apply flex items-center justify-between p-3 cursor-pointer hover:bg-bg-tertiary/50 transition-colors;
+  }
+
+  .progress-bar {
+    @apply h-2 bg-bg-tertiary rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full bg-accent-green transition-all duration-300;
+  }
+
+  .spinner {
+    @apply w-5 h-5 border-2 border-text-muted border-t-accent-blue rounded-full animate-spin;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+  }
+
+  .modal-content {
+    @apply bg-bg-secondary border border-border rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden;
+  }
+
+  .toast {
+    @apply px-4 py-3 rounded-lg shadow-lg border animate-slide-in;
+  }
+
+  .toast-success {
+    @apply bg-accent-green/20 border-accent-green/30 text-accent-green;
+  }
+
+  .toast-error {
+    @apply bg-accent-red/20 border-accent-red/30 text-accent-red;
+  }
+
+  .toast-warning {
+    @apply bg-accent-yellow/20 border-accent-yellow/30 text-accent-yellow;
+  }
+
+  .toast-info {
+    @apply bg-accent-blue/20 border-accent-blue/30 text-accent-blue;
+  }
+
+  .connection-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .connection-connected {
+    @apply bg-accent-green;
+  }
+
+  .connection-disconnected {
+    @apply bg-accent-red;
+  }
+
+  .connection-reconnecting {
+    @apply bg-accent-yellow animate-pulse;
+  }
+}
+
+@layer components {
+  /* Prose styles for markdown rendering */
+  .prose {
+    @apply text-text-secondary;
+  }
+
+  .prose-invert {
+    @apply text-text-secondary;
+  }
+
+  .prose-sm {
+    @apply text-sm;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    @apply text-text-primary font-semibold;
+  }
+
+  .prose a {
+    @apply text-accent-blue hover:underline;
+  }
+
+  .prose code {
+    @apply bg-bg-tertiary px-1 py-0.5 rounded text-accent-blue text-xs;
+  }
+
+  .prose pre {
+    @apply bg-bg-tertiary p-3 rounded overflow-x-auto my-2;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .prose ul,
+  .prose ol {
+    @apply pl-4 my-2 space-y-1;
+  }
+
+  .prose ul {
+    @apply list-disc;
+  }
+
+  .prose ol {
+    @apply list-decimal;
+  }
+
+  .prose blockquote {
+    @apply border-l-2 border-accent-blue pl-3 my-2 text-text-muted italic;
+  }
+
+  .prose p {
+    @apply my-2;
+  }
+
+  .prose hr {
+    @apply border-border my-4;
+  }
+
+  .prose table {
+    @apply w-full border-collapse my-2;
+  }
+
+  .prose th,
+  .prose td {
+    @apply border border-border px-3 py-2 text-left;
+  }
+
+  .prose th {
+    @apply bg-bg-tertiary font-semibold;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
