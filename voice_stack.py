@@ -13,7 +13,7 @@ log = get_logger("voice_stack")
 
 class VoiceStack:
     def __init__(self, config=None):
-        self.pipeline = WakeWordPipeline(wake_word="hey_jarvis", timeout_s=30.0)
+        self.pipeline = WakeWordPipeline(wake_word="hey_jarvis", timeout_s=90.0)
         self.whisper = WhisperWrapper()
         self.ollama = OllamaStreamer()
         self.piper = PiperStreamer()

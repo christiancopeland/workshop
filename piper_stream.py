@@ -3,15 +3,21 @@ Workshop Phase 2: Piper Streaming TTS
 Sentence-by-sentence speech synthesis for real-time audio
 """
 
+import os
 import subprocess
 import numpy as np
 import wave
 import tempfile
+import shutil
 from pathlib import Path
 from typing import Generator, Optional
 from logger import get_logger
 
 log = get_logger("piper_stream")
+
+# Default paths - override with environment variables
+DEFAULT_PIPER_MODEL = os.getenv("PIPER_MODEL_PATH", "")
+DEFAULT_PIPER_BIN = os.getenv("PIPER_BIN_PATH", shutil.which("piper") or "piper")
 
 
 class PiperStreamingTTS:
@@ -36,29 +42,33 @@ class PiperStreamingTTS:
     """
     
     def __init__(self,
-                 model_path: str = "~/FlyingTiger/Workshop_Assistant_Dev/en_US-lessac-medium.onnx",
-                 piper_bin: str = "/home/bron/miniconda3/envs/workshop/bin/piper",
+                 model_path: str = None,
+                 piper_bin: str = None,
                  sample_rate: int = 22050):
         """
         Initialize Piper TTS.
-        
+
         Args:
-            model_path: Path to Piper voice model (.onnx)
-            piper_bin: Path to piper binary (or "piper" if in PATH)
+            model_path: Path to Piper voice model (.onnx).
+                        Set PIPER_MODEL_PATH env var or pass explicitly.
+            piper_bin: Path to piper binary (or "piper" if in PATH).
+                       Set PIPER_BIN_PATH env var or pass explicitly.
             sample_rate: Output sample rate (Piper default: 22050)
         """
-        self.model_path = Path(model_path).expanduser()
-        self.piper_bin = piper_bin
+        self.model_path = Path(model_path or DEFAULT_PIPER_MODEL).expanduser() if (model_path or DEFAULT_PIPER_MODEL) else None
+        self.piper_bin = piper_bin or DEFAULT_PIPER_BIN
         self.sample_rate = sample_rate
         
         # Verify model exists
-        if not self.model_path.exists():
+        if self.model_path and not self.model_path.exists():
             log.warning(f"Model not found: {self.model_path}")
+        elif not self.model_path:
+            log.warning("No Piper model path configured. Set PIPER_MODEL_PATH env var.")
         
         # Statistics
         self.sentences_synthesized = 0
         
-        log.info(f"PiperStreamingTTS: {self.model_path.name}")
+        log.info(f"PiperStreamingTTS: {self.model_path.name if self.model_path else 'not configured'}")
     
     def synthesize(self, text: str) -> np.ndarray:
         """
@@ -151,9 +161,66 @@ class PiperStreamingTTS:
             
             return audio
     
+    def _split_into_sentences(self, text: str) -> list:
+        """
+        Split text into sentences for streaming synthesis.
+
+        Uses simple heuristics to split on sentence boundaries while
+        keeping the speech natural (doesn't break on abbreviations, etc.)
+
+        Args:
+            text: Full text to split
+
+        Returns:
+            List of sentences
+        """
+        import re
+
+        # Clean up the text first
+        text = text.strip()
+        if not text:
+            return []
+
+        # Common abbreviations that shouldn't trigger sentence breaks
+        abbreviations = r'\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|vs|etc|e\.g|i\.e|Inc|Ltd|Corp)\.'
+
+        # Temporarily protect abbreviations
+        protected = re.sub(abbreviations, lambda m: m.group(0).replace('.', '<DOT>'), text)
+
+        # Split on sentence-ending punctuation followed by space or end
+        # This handles: . ! ? and also handles quotes like ." or !"
+        sentences = re.split(r'(?<=[.!?])\s+(?=[A-Z"])|(?<=[.!?])$', protected)
+
+        # Restore protected dots and clean up
+        sentences = [s.replace('<DOT>', '.').strip() for s in sentences if s.strip()]
+
+        # If no splits found (no proper sentences), return chunks by length
+        if len(sentences) == 1 and len(text) > 200:
+            # Split on commas or other natural pauses for very long text without sentence breaks
+            chunks = re.split(r'(?<=[,;:])\s+', text)
+            # Combine small chunks to avoid too-short utterances
+            combined = []
+            current = ""
+            for chunk in chunks:
+                if len(current) + len(chunk) < 150:
+                    current = (current + " " + chunk).strip()
+                else:
+                    if current:
+                        combined.append(current)
+                    current = chunk
+            if current:
+                combined.append(current)
+            return combined if len(combined) > 1 else sentences
+
+        return sentences
+
     async def speak(self, text: str):
         """
-        Speak text using TTS with audio playback.
+        Speak text using TTS with streaming sentence-by-sentence playback.
+
+        Splits text into sentences and starts playing audio immediately
+        after the first sentence is synthesized. This dramatically reduces
+        perceived latency for long responses.
 
         Args:
             text: Text to speak
@@ -161,14 +228,46 @@ class PiperStreamingTTS:
         if not text.strip():
             return
 
-        # Synthesize audio
-        audio = self.synthesize(text)
+        import sounddevice as sd
 
-        if len(audio) > 0:
-            # Play audio using sounddevice
-            import sounddevice as sd
-            sd.play(audio, self.sample_rate)
-            sd.wait()  # Block until playback finishes
+        # Split into sentences for streaming
+        sentences = self._split_into_sentences(text)
+
+        if not sentences:
+            return
+
+        log.debug(f"[TTS] Streaming {len(sentences)} sentences")
+
+        # For single short sentences, use simple synthesis
+        if len(sentences) == 1 and len(text) < 200:
+            audio = self.synthesize(text)
+            if len(audio) > 0:
+                sd.play(audio, self.sample_rate)
+                sd.wait()
+            return
+
+        # Stream sentences: synthesize and play each one
+        for i, sentence in enumerate(sentences):
+            if not sentence.strip():
+                continue
+
+            log.debug(f"[TTS] Synthesizing sentence {i+1}/{len(sentences)}: {sentence[:50]}...")
+
+            # Synthesize this sentence
+            audio = self.synthesize(sentence)
+
+            if len(audio) > 0:
+                # Play this sentence (blocks until done)
+                sd.play(audio, self.sample_rate)
+                sd.wait()
+
+                # Small pause between sentences for natural rhythm
+                # (only if there are more sentences coming)
+                if i < len(sentences) - 1:
+                    import asyncio
+                    await asyncio.sleep(0.1)
+
+        log.debug(f"[TTS] Finished streaming {len(sentences)} sentences")
 
     async def play_chime(self):
         """Play a simple chime sound to indicate wake word detection."""

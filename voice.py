@@ -22,28 +22,117 @@ log = get_logger("voice")
 
 class VoiceInterface:
     """Voice input/output interface using Whisper and Piper"""
-    
+
+    # Model VRAM estimates (GB) for selection
+    MODEL_VRAM = {
+        "tiny.en": 0.5, "tiny": 0.5,
+        "base.en": 0.5, "base": 0.5,
+        "small.en": 1.0, "small": 1.0,
+        "medium.en": 3.0, "medium": 3.0,
+        "large-v2": 5.0, "large-v3": 5.0, "large": 5.0,
+    }
+
+    # Technical terms correction dictionary
+    # Add your commonly misheard terms here
+    CORRECTIONS = {
+        # Workshop/Claude specific
+        "claw to code": "Claude Code",
+        "cloud code": "Claude Code",
+        "claud code": "Claude Code",
+        "claude coat": "Claude Code",
+        "work shop": "Workshop",
+
+        # Technical terms
+        "g.p.t.": "GPT",
+        "l.l.m.": "LLM",
+        "a.p.i.": "API",
+        "o llama": "Ollama",
+        "olama": "Ollama",
+        "pie torch": "PyTorch",
+        "pi torch": "PyTorch",
+
+        # Hardware/Electronics
+        "ina 219": "INA219",
+        "i.n.a. 219": "INA219",
+        "esp 32": "ESP32",
+        "e.s.p. 32": "ESP32",
+        "raspberry pi": "Raspberry Pi",
+        "ras pi": "Raspberry Pi",
+        "arduino": "Arduino",
+        "j.s.t.": "JST",
+
+        # Add your project-specific terms below
+    }
+
     def __init__(
         self,
-        whisper_model: str = "base.en",
+        whisper_model: str = "auto",
         piper_model: str = "en_US-lessac-medium",
         wake_word: str = "workshop",
-        sample_rate: int = 16000
+        sample_rate: int = 16000,
+        vad_confidence_threshold: float = 0.6
     ):
-        self.whisper_model_name = whisper_model
+        """
+        Initialize voice interface with auto model selection.
+
+        Args:
+            whisper_model: Model name or "auto" for GPU-based selection
+            piper_model: Piper TTS model name
+            wake_word: Wake word for activation
+            sample_rate: Audio sample rate (16kHz for Whisper)
+            vad_confidence_threshold: Minimum VAD confidence to transcribe (0.0-1.0)
+        """
         self.piper_model = piper_model
         self.wake_word = wake_word.lower()
         self.sample_rate = sample_rate
-        
+        self.vad_confidence_threshold = vad_confidence_threshold
+
+        # Auto-select model based on GPU memory
+        if whisper_model == "auto":
+            self.whisper_model_name = self._select_optimal_model()
+        else:
+            self.whisper_model_name = whisper_model
+
         self._whisper_model = None
         self._audio_queue = queue.Queue()
         self._is_listening = False
-        
+
         # Try to import audio dependencies
         self._sounddevice = None
         self._has_audio = self._init_audio()
-        
-        log.info(f"VoiceInterface initialized: wake_word={wake_word}, has_audio={self._has_audio}")
+
+        log.info(f"VoiceInterface initialized: model={self.whisper_model_name}, wake_word={wake_word}, vad_threshold={vad_confidence_threshold}")
+
+    def _select_optimal_model(self) -> str:
+        """Select the best Whisper model that fits in GPU memory."""
+        try:
+            import torch
+            if torch.cuda.is_available():
+                # Get available GPU memory in GB
+                gpu_mem = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+                # Reserve 3GB for other models/overhead
+                available = gpu_mem - 3.0
+
+                log.info(f"GPU memory: {gpu_mem:.1f}GB, available for Whisper: {available:.1f}GB")
+
+                # Select largest model that fits
+                if available >= 5.0:
+                    model = "large-v3-turbo"  # Newer, better for conversational speech
+                elif available >= 3.0:
+                    model = "medium.en"
+                elif available >= 1.0:
+                    model = "small.en"
+                else:
+                    model = "base.en"
+
+                log.info(f"Auto-selected Whisper model: {model}")
+                return model
+            else:
+                log.info("No CUDA available, using small.en for CPU")
+                return "small.en"
+        except Exception as e:
+            log.warning(f"GPU detection failed: {e}, defaulting to base.en")
+            return "base.en"
     
     def _init_audio(self) -> bool:
         """Initialize audio dependencies"""
@@ -67,14 +156,14 @@ class VoiceInterface:
             return False
     
     def _load_whisper(self):
-        """Lazy-load Whisper model"""
+        """Lazy-load Whisper model with optimal settings."""
         if self._whisper_model is None:
             try:
                 # Try faster-whisper first (recommended)
                 from faster_whisper import WhisperModel
                 print(f"  → Loading Whisper model ({self.whisper_model_name})...")
                 log.info(f"Loading faster-whisper model: {self.whisper_model_name}")
-                
+
                 # Try CUDA first, fall back to CPU
                 try:
                     self._whisper_model = WhisperModel(
@@ -82,19 +171,22 @@ class VoiceInterface:
                         device="cuda",
                         compute_type="float16"
                     )
-                    log.info("Whisper loaded successfully (faster-whisper, CUDA)")
+                    self._device = "cuda"
+                    log.info(f"Whisper {self.whisper_model_name} loaded (faster-whisper, CUDA float16)")
+                    print(f"  ✓ Loaded {self.whisper_model_name} on CUDA")
                 except Exception as cuda_err:
                     log.warning(f"CUDA failed: {cuda_err}, falling back to CPU")
-                    print(f"  → CUDA unavailable, using CPU...")
+                    print(f"  → CUDA unavailable, using CPU with int8...")
                     self._whisper_model = WhisperModel(
                         self.whisper_model_name,
                         device="cpu",
                         compute_type="int8"
                     )
-                    log.info("Whisper loaded successfully (faster-whisper, CPU)")
-                
+                    self._device = "cpu"
+                    log.info(f"Whisper {self.whisper_model_name} loaded (faster-whisper, CPU int8)")
+
                 self._whisper_type = "faster"
-                
+
             except ImportError:
                 log.warning("faster-whisper not found, trying openai-whisper")
                 # Fallback to openai-whisper
@@ -103,6 +195,7 @@ class VoiceInterface:
                     print(f"  → Loading Whisper model ({self.whisper_model_name})...")
                     self._whisper_model = whisper.load_model(self.whisper_model_name)
                     self._whisper_type = "openai"
+                    self._device = "cuda" if next(self._whisper_model.parameters()).is_cuda else "cpu"
                     log.info("Whisper loaded successfully (openai-whisper)")
                 except ImportError:
                     print("⚠️  No Whisper library found.")
@@ -115,8 +208,59 @@ class VoiceInterface:
                 print(f"⚠️  Whisper load failed: {e}")
                 self._whisper_model = None
                 self._whisper_type = None
-        
+
         return self._whisper_model is not None
+
+    def _clean_transcription(self, text: str) -> str:
+        """
+        Post-process transcription to clean artifacts and fix common errors.
+
+        Args:
+            text: Raw transcription text
+
+        Returns:
+            Cleaned transcription
+        """
+        import re
+
+        if not text:
+            return ""
+
+        # Remove common filler words (but preserve meaning)
+        fillers = [
+            r'\b(um+)\b',
+            r'\b(uh+)\b',
+            r'\b(er+)\b',
+            r'\b(ah+)\b',
+            r'\blike,\s*',
+            r'\byou know,\s*',
+            r'\bbasically,\s*',
+            r'\bso,\s+(?=[a-z])',  # "so," at start of clauses
+            r'\bI mean,\s*',
+        ]
+        for filler in fillers:
+            text = re.sub(filler, '', text, flags=re.IGNORECASE)
+
+        # Apply corrections dictionary (case-insensitive matching)
+        text_lower = text.lower()
+        for wrong, right in self.CORRECTIONS.items():
+            if wrong.lower() in text_lower:
+                # Use case-insensitive replacement
+                pattern = re.compile(re.escape(wrong), re.IGNORECASE)
+                text = pattern.sub(right, text)
+                text_lower = text.lower()
+
+        # Collapse multiple spaces
+        text = re.sub(r'\s+', ' ', text)
+
+        # Fix common Whisper artifacts
+        text = re.sub(r'\s+([.,!?])', r'\1', text)  # Remove space before punctuation
+        text = re.sub(r'([.,!?])([A-Za-z])', r'\1 \2', text)  # Add space after punctuation
+
+        # Remove repeated words (Whisper sometimes stutters)
+        text = re.sub(r'\b(\w+)\s+\1\b', r'\1', text, flags=re.IGNORECASE)
+
+        return text.strip()
     
     async def wait_for_activation(self, timeout: Optional[float] = None) -> Optional[str]:
         """
@@ -300,40 +444,85 @@ class VoiceInterface:
             return None
     
     async def _transcribe(self, audio: np.ndarray) -> Optional[str]:
-        """Transcribe audio to text using Whisper"""
+        """
+        Transcribe audio to text using Whisper with anti-hallucination settings.
+
+        Uses beam search and multiple candidates, but avoids initial_prompt
+        and condition_on_previous_text which can cause hallucinations.
+        """
         if self._whisper_model is None:
             log.error("Transcribe called but Whisper not loaded")
             return None
-        
+
         try:
             loop = asyncio.get_event_loop()
-            log.debug(f"Transcribing {len(audio)} samples...")
-            
+            duration = len(audio) / self.sample_rate
+            log.debug(f"Transcribing {len(audio)} samples ({duration:.2f}s)...")
+
             if self._whisper_type == "faster":
-                # faster-whisper
-                segments, _ = await loop.run_in_executor(
-                    None,
-                    lambda: self._whisper_model.transcribe(
+                # faster-whisper with anti-hallucination settings
+                def do_transcribe():
+                    segments, info = self._whisper_model.transcribe(
                         audio,
                         language="en",
-                        vad_filter=True
+                        task="transcribe",
+                        beam_size=5,
+                        best_of=5,
+                        patience=1.0,
+                        temperature=0.0,
+                        vad_filter=True,
+                        vad_parameters={
+                            "min_silence_duration_ms": 300,
+                            "speech_pad_ms": 200
+                        },
+                        condition_on_previous_text=False,  # Prevents hallucination loops
+                        no_speech_threshold=0.6,
+                        hallucination_silence_threshold=0.5,
+                        repetition_penalty=1.1,
                     )
-                )
+                    return list(segments), info
+
+                segments, info = await loop.run_in_executor(None, do_transcribe)
+
+                # Log transcription quality info
+                if segments:
+                    avg_logprob = sum(s.avg_logprob for s in segments) / len(segments)
+                    log.debug(f"Transcription info: lang={info.language}, prob={info.language_probability:.2f}, avg_logprob={avg_logprob:.2f}")
+
                 text = " ".join(seg.text for seg in segments).strip()
             else:
                 # openai-whisper
-                result = await loop.run_in_executor(
-                    None,
-                    lambda: self._whisper_model.transcribe(
+                def do_transcribe():
+                    return self._whisper_model.transcribe(
                         audio,
-                        language="en"
+                        language="en",
+                        task="transcribe",
+                        beam_size=5,
+                        best_of=5,
+                        temperature=0,
+                        condition_on_previous_text=False,
                     )
-                )
+
+                result = await loop.run_in_executor(None, do_transcribe)
                 text = result["text"].strip()
-            
+
+            # Hallucination detection: reject suspiciously verbose output
+            words = len(text.split()) if text else 0
+            words_per_second = words / duration if duration > 0 else 0
+            if duration < 2.0 and words_per_second > 5.0:
+                log.warning(f"Possible hallucination: {words} words in {duration:.1f}s ({words_per_second:.1f} w/s)")
+                return None
+
+            # Apply post-processing
+            raw_text = text
+            text = self._clean_transcription(text)
+
+            if raw_text != text:
+                log.debug(f"Cleaned: '{raw_text}' → '{text}'")
+
             log.debug(f"Transcription: '{text}'")
             return text if text else None
-            
+
         except Exception as e:
             log.error(f"Transcription error: {e}", exc_info=True)
             print(f"Transcription error: {e}")

@@ -26,7 +26,7 @@ class WakeWordPipeline:
     def __init__(self,
                  wake_word: str = "alexa",  # ← FIXED: Use built-in model
                  model_path: Optional[str] = None,
-                 timeout_s: float = 30.0,
+                 timeout_s: float = 90.0,
                  sample_rate: int = 44100,       # ← FIXED: Blue mic rate
                  workshop=None,                 # ← FIXED: Proper param
                  event_loop=None):              # ← NEW: Event loop for async callbacks
@@ -142,9 +142,9 @@ class WakeWordPipeline:
                             # Sync callback
                             self.on_wake()
                     except Exception as e:
-                        log.error(f"Wake callback error: {e}")
-                        import traceback
-                        traceback.print_exc()
+                        # Include exception type for debugging empty error messages
+                        log.error(f"Wake callback error: {type(e).__name__}: {e}")
+                        log.debug("Wake callback traceback:", exc_info=True)
 
                 # Transition to listening
                 self.set_state("listening")
@@ -172,7 +172,7 @@ class WakeWordPipeline:
         try:
             # Capture speech segment (blocking)
             segment, reason = self.audio_pipeline.capture_speech_segment(
-                max_wait_s=30.0,
+                max_wait_s=90.0,
                 require_speech=False
             )
             
@@ -194,9 +194,9 @@ class WakeWordPipeline:
                                     self.on_speech(segment, reason),
                                     self.event_loop
                                 )
-                                # Block until callback completes (with 60s timeout)
+                                # Block until callback completes (with 5 min timeout for long operations)
                                 log.debug("Waiting for async speech callback to complete...")
-                                future.result(timeout=60.0)
+                                future.result(timeout=300.0)
                                 log.debug("Async speech callback completed")
                             else:
                                 # No event loop provided - create temporary one
@@ -211,9 +211,9 @@ class WakeWordPipeline:
                             # Sync callback
                             self.on_speech(segment, reason)
                     except Exception as e:
-                        log.error(f"Speech callback error: {e}")
-                        import traceback
-                        traceback.print_exc()
+                        # Include exception type for debugging empty error messages
+                        log.error(f"Speech callback error: {type(e).__name__}: {e}")
+                        log.debug("Speech callback traceback:", exc_info=True)
                 
                 self.set_state("processing")
             else:

@@ -41,24 +41,29 @@ class AudioFramePipeline:
     def __init__(self,
                  sample_rate: int = 16000,
                  frame_size: int = 512,
-                 timeout_s: float = 30.0,
+                 timeout_s: float = 90.0,
                  vad_threshold: float = 0.5,
-                 interruption_threshold: float = 0.6):
+                 interruption_threshold: float = 0.6,
+                 min_confidence: float = 0.6):
         """
         Initialize audio frame pipeline.
-        
+
         Args:
             sample_rate: Audio sample rate (16kHz for Whisper)
             frame_size: Frame size in samples (512 = 32ms @ 16kHz)
             timeout_s: Maximum speech duration before forcing end
             vad_threshold: Speech detection threshold
             interruption_threshold: Interruption detection threshold (higher = less sensitive)
+            min_confidence: Minimum VAD confidence to accept speech segment (0.0-1.0)
+                           Segments below this threshold are discarded to avoid
+                           transcribing noise/silence. Default 0.6.
         """
         self.sample_rate = sample_rate
         self.frame_size = frame_size
         self.timeout_s = timeout_s
-        
-        log.info(f"Initializing AudioFramePipeline (rate={sample_rate}, frame={frame_size}, timeout={timeout_s}s)")
+        self.min_confidence = min_confidence
+
+        log.info(f"Initializing AudioFramePipeline (rate={sample_rate}, frame={frame_size}, timeout={timeout_s}s, min_confidence={min_confidence})")
         
         # Initialize audio capture
         self.capture = AudioStream(sample_rate=44100, channels=2, frame_size=1470, device_id=None)
@@ -67,7 +72,7 @@ class AudioFramePipeline:
         self.vad = VoiceActivityDetector(
             threshold=vad_threshold,
             min_speech_duration_ms=250,
-            min_silence_duration_ms=300
+            min_silence_duration_ms=3000  # 3s pause to end speech
         )
         
         self.speech_detector = SpeechEndDetector(
@@ -84,11 +89,16 @@ class AudioFramePipeline:
         # State
         self.listening = False
         self.assistant_speaking = False
-        
+
+        # Track peak confidence during speech for filtering
+        self._peak_confidence = 0.0
+        self._confidence_samples = []
+
         # Statistics
         self.segments_captured = 0
+        self.segments_rejected = 0  # Low-confidence segments discarded
         self.interruptions_detected = 0
-        
+
         log.info("AudioFramePipeline initialized successfully")
     
     def start_listening(self, start_capture: bool = True):
@@ -179,6 +189,7 @@ class AudioFramePipeline:
                 - (segment, "natural_pause"): Speech ended naturally
                 - (segment, "timeout"): Speech exceeded timeout
                 - (None, "interrupted"): User interrupted assistant
+                - (None, "low_confidence"): Segment rejected due to low VAD confidence
         """
         # Convert frame to 16kHz 512-sample format for VAD
         frame_16k = self.to_vad_frame(frame)
@@ -193,13 +204,43 @@ class AudioFramePipeline:
             return None, None
 
         else:
+            # Track confidence during speech
+            if self.vad.is_speaking:
+                current_conf = self.vad.get_probability()
+                self._confidence_samples.append(current_conf)
+                self._peak_confidence = max(self._peak_confidence, current_conf)
+
             # Normal speech detection and capture
             segment, reason = self.speech_detector.process_frame(frame_16k)
 
             if segment is not None:
+                # Calculate average confidence for this segment
+                avg_confidence = (
+                    sum(self._confidence_samples) / len(self._confidence_samples)
+                    if self._confidence_samples else 0.0
+                )
+
+                # Reset confidence tracking for next segment
+                peak_conf = self._peak_confidence
+                self._peak_confidence = 0.0
+                self._confidence_samples = []
+
+                # Filter low-confidence segments
+                if avg_confidence < self.min_confidence:
+                    self.segments_rejected += 1
+                    duration = len(segment) / self.sample_rate
+                    log.info(
+                        f"🚫 Segment rejected (low confidence): {duration:.2f}s, "
+                        f"avg={avg_confidence:.2f}, peak={peak_conf:.2f}, min_required={self.min_confidence}"
+                    )
+                    return None, "low_confidence"
+
                 self.segments_captured += 1
                 duration = len(segment) / self.sample_rate
-                log.info(f"📦 Speech segment #{self.segments_captured}: {duration:.2f}s ({reason})")
+                log.info(
+                    f"📦 Speech segment #{self.segments_captured}: {duration:.2f}s ({reason}), "
+                    f"confidence: avg={avg_confidence:.2f}, peak={peak_conf:.2f}"
+                )
                 return segment, reason
 
             return None, None
@@ -271,38 +312,50 @@ class AudioFramePipeline:
     def get_stats(self) -> dict:
         """
         Get pipeline statistics.
-        
+
         Aggregates statistics from all components.
-        
+
         Returns:
             Dictionary with comprehensive pipeline statistics
         """
+        total_segments = self.segments_captured + self.segments_rejected
+        acceptance_rate = (
+            self.segments_captured / total_segments * 100
+            if total_segments > 0 else 100.0
+        )
+
         stats = {
             "sample_rate": self.sample_rate,
             "frame_size": self.frame_size,
             "timeout_s": self.timeout_s,
+            "min_confidence": self.min_confidence,
             "listening": self.listening,
             "assistant_speaking": self.assistant_speaking,
             "segments_captured": self.segments_captured,
+            "segments_rejected": self.segments_rejected,
+            "acceptance_rate_pct": round(acceptance_rate, 1),
             "interruptions_detected": self.interruptions_detected,
             "vad": self.vad.get_stats(),
             "speech_detector": self.speech_detector.get_stats(),
             "interruption_detector": self.interruption_detector.get_stats()
         }
-        
+
         return stats
-    
+
     def reset(self):
         """Reset all pipeline components."""
         log.info("Resetting pipeline...")
-        
+
         self.vad.reset()
         self.speech_detector.reset()
         self.interruption_detector.reset()
-        
+
+        self._peak_confidence = 0.0
+        self._confidence_samples = []
         self.segments_captured = 0
+        self.segments_rejected = 0
         self.interruptions_detected = 0
-        
+
         log.info("Pipeline reset complete")
 
 
