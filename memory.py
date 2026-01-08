@@ -33,6 +33,7 @@ class MemorySystem:
         self._messages: List[Dict[str, str]] = []
         self._session_start = datetime.now()
         self.message_count = 0
+        self._current_session_id: Optional[str] = None  # Set via start_session()
         
         # Index cache - track what's already indexed
         self._indexed_files: Dict[str, float] = {}  # path -> mtime
@@ -219,12 +220,12 @@ class MemorySystem:
         }
         self._messages.append(msg)
         self.message_count += 1
-        
-        # Log to SQLite
+
+        # Log to SQLite with session_id
         try:
             self.conn.execute(
-                "INSERT INTO messages (role, content) VALUES (?, ?)",
-                (role, content)
+                "INSERT INTO messages (session_id, role, content) VALUES (?, ?, ?)",
+                (self._current_session_id, role, content)
             )
             self.conn.commit()
         except Exception as e:
@@ -241,7 +242,45 @@ class MemorySystem:
     def clear_conversation(self):
         """Clear the current conversation"""
         self._messages = []
-    
+
+    def start_session(self, session_id: str):
+        """
+        Start a new session.
+
+        This clears the in-memory message buffer and sets the session ID
+        for all future messages. Called by SessionManager on startup.
+        """
+        self._current_session_id = session_id
+        self._messages = []  # Clear in-memory messages for fresh start
+        self._session_start = datetime.now()
+        self.message_count = 0
+        log.info(f"Memory session started: {session_id}")
+
+    def end_session(self) -> Dict[str, Any]:
+        """
+        End the current session.
+
+        Returns summary of the session for archival.
+        """
+        summary = {
+            "session_id": self._current_session_id,
+            "started_at": self._session_start.isoformat(),
+            "ended_at": datetime.now().isoformat(),
+            "message_count": self.message_count
+        }
+
+        # Clear session state
+        self._current_session_id = None
+        self._messages = []
+        self.message_count = 0
+
+        log.info(f"Memory session ended: {summary}")
+        return summary
+
+    def get_session_id(self) -> Optional[str]:
+        """Get the current session ID"""
+        return self._current_session_id
+
     # === Session Memory (SQLite) ===
     
     def get_user_profile(self) -> Optional[str]:
@@ -387,24 +426,54 @@ class MemorySystem:
         except Exception as e:
             log.debug(f"Failed to add batch: {e}")
     
-    def search_memories(self, query: str, k: int = 5, category: str = None) -> List[str]:
-        """Search long-term memory semantically"""
+    def search_memories(self, query: str, k: int = 5, category: str = None, include_metadata: bool = False) -> List:
+        """Search long-term memory semantically
+
+        Args:
+            query: Search query
+            k: Number of results to return
+            category: Optional category filter
+            include_metadata: If True, return dicts with content, metadata, and distance
+                            If False, return list of strings (legacy behavior)
+
+        Returns:
+            List of strings or dicts depending on include_metadata
+        """
         if self._collection is None or not query.strip():
             return []
-        
+
         try:
             where = {"category": category} if category else None
-            
+
             results = self._collection.query(
                 query_texts=[query],
                 n_results=k,
-                where=where
+                where=where,
+                include=["documents", "metadatas", "distances"]
             )
-            
-            if results and results["documents"]:
-                return results["documents"][0]
-            return []
-            
+
+            if not results or not results.get("documents") or not results["documents"][0]:
+                return []
+
+            documents = results["documents"][0]
+
+            if not include_metadata:
+                # Legacy behavior - return list of strings
+                return documents
+
+            # Return rich results with metadata and distances
+            metadatas = results.get("metadatas", [[]])[0] or [{}] * len(documents)
+            distances = results.get("distances", [[]])[0] or [0.0] * len(documents)
+
+            return [
+                {
+                    "content": doc,
+                    "metadata": meta or {},
+                    "distance": dist
+                }
+                for doc, meta, dist in zip(documents, metadatas, distances)
+            ]
+
         except Exception as e:
             log.debug(f"Search failed: {e}")
             return []
