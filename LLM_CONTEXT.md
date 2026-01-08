@@ -10,40 +10,40 @@ Workshop is a Python-based AI agent system featuring two-stage Fabric-style rout
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                              USER INPUT                                      │
-│                        (Text / Voice / Dashboard)                            │
+│                              USER INPUT                                     │
+│                        (Text / Voice / Dashboard)                           │
 └─────────────────────────────────┬───────────────────────────────────────────┘
                                   │
                                   ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           WORKSHOP AGENT                                     │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  STAGE 0: Context Injection                                          │   │
-│  │  - ContextManager: active files, recent changes, detected workflow   │   │
-│  │  - TelosManager: user profile, goals, project context                │   │
-│  │  - TaskManager: current task list and progress                       │   │
-│  └─────────────────────────────────┬───────────────────────────────────┘   │
+│                           WORKSHOP AGENT                                    │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 0: Context Injection                                         │    │
+│  │  - ContextManager: active files, recent changes, detected workflow  │    │
+│  │  - TelosManager: user profile, goals, project context               │    │
+│  │  - TaskManager: current task list and progress                      │    │
+│  └─────────────────────────────────┬───────────────────────────────────┘    │
 │                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  STAGE 1: Semantic-First Routing (Phase 3)                          │   │
-│  │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐          │   │
-│  │  │ SemanticRouter│ →  │ PromptRouter │ →  │ SkillExecutor│          │   │
-│  │  │ (embeddings)  │    │ (Claude fallback)│ │ (Claude Code)│          │   │
-│  │  └──────────────┘    └──────────────┘    └──────────────┘          │   │
-│  └─────────────────────────────────┬───────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 1: Semantic-First Routing (Phase 3)                          │    │
+│  │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐           │    │
+│  │  │ SemanticRouter →  │ PromptRouter │ →  │ SkillExecutor│           │    │
+│  │  │ (embeddings) │    │ (Claude fallback) │ (Claude Code)│           │    │
+│  │  └──────────────┘    └──────────────┘    └──────────────┘           │    │
+│  └─────────────────────────────────┬───────────────────────────────────┘    │
 │                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  STAGE 2: Skill Execution (via Claude Code CLI)                      │   │
-│  │  - ClaudeCodeBridge: subprocess wrapper for `claude -p`             │   │
-│  │  - Non-native tool calling (<tool_call> XML format)                  │   │
-│  │  - Workshop executes tools locally, feeds results back to Claude     │   │
-│  └─────────────────────────────────┬───────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 2: Skill Execution (via Claude Code CLI)                     │    │
+│  │  - ClaudeCodeBridge: subprocess wrapper for `claude -p`             │    │
+│  │  - Non-native tool calling (<tool_call> XML format)                 │    │
+│  │  - Workshop executes tools locally, feeds results back to Claude    │    │
+│  └─────────────────────────────────┬───────────────────────────────────┘    │
 │                                    ▼                                        │
-│  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │  STAGE 3: Auto-Continue & Task Advancement                           │   │
-│  │  - Track task completion with work evidence validation               │   │
-│  │  - Recursively continue if pending tasks exist                       │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │  STAGE 3: Auto-Continue & Task Advancement                          │    │
+│  │  - Track task completion with work evidence validation              │    │
+│  │  - Recursively continue if pending tasks exist                      │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────────────────┘
                                   │
               ┌───────────────────┼───────────────────┐
