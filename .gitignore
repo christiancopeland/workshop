@@ -112,6 +112,7 @@ specs/
 docs/
 *.md
 !README.md
+!LLM_CONTEXT.md
 
 # Misc notes and external docs
 tools_note.txt
